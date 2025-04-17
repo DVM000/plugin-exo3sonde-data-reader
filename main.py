@@ -45,6 +45,7 @@ def force_sampling(instrument):
     try:
         # Read holding register
         instrument.write_register(1,1,1,6)  # Registernumber, number of decimals
+        time.sleep(15)
     except Exception as e:
         logging.error(f"Error communicating with instrument: {e}")
            
@@ -121,9 +122,7 @@ def main(args):
     # Main loop: read and publish data
     while connected:
     
-        force_sampling(instrument)
-        
-        time.sleep(1)
+        force_sampling(instrument)  
         
         # Data reading
         try:
