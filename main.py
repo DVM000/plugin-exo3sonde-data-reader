@@ -72,7 +72,8 @@ def decode_data(register_values, lookup_dict):
     decoded_data = []
     for i in range(32):
         code = param_codes[i]
-        if code != 0:
+        status = status_codes[i]
+        if code != 0 and status != 0: # only valid parameters
             name = lookup_dict.get(code, f"Unknown (Code {code})")
             status = 'Available' if status_codes[i] == 0 else 'Unavailable'
             value = float_values[i] if status == 'Available' else None
@@ -97,9 +98,9 @@ def decode_data(register_values, lookup_dict):
                     value = f"Invalid time: {value}"
                     
             decoded_data.append({
-                '#': i,
+                 #'#': i,
                 'Parameter Name': name,
-                'Status': status,
+                 #'Status': status, # only send available parameter values
                 'Value': value
             })
         
@@ -139,7 +140,7 @@ def main(args):
             decoded_df = decode_data(register_values, lookup_dict)
             
             # Publish encoded and compressed data
-            json_string = decoded_df.to_json(orient='records')  
+            json_string = decoded_df.to_json(orient='records') 
             json_bytes = json_string.encode('utf-8')
             rawzb64_data = base64.b64encode(zlib.compress(json_bytes)).decode('utf-8')
 
